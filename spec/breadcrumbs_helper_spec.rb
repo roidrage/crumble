@@ -20,11 +20,19 @@ describe BreadcrumbsHelper do
     "http://test.host/f/#{user.login}/articles/#{article.id}"
   end
   
-  def search_url(params)
+  def search_url(params = nil)
     if params.is_a?(Hash)
       "http://test.host/search?#{params.collect{|key, value| "#{key.to_s}=#{value}"}.join('&')}"
     else
       "http://test.host/search/#{params}"
+    end
+  end
+  
+  def url_for(params)
+    if params.is_a?(Hash)
+      "http://test.host/#{params[:controller]}/#{params[:action]}"
+    else
+      super
     end
   end
   
@@ -119,7 +127,7 @@ describe BreadcrumbsHelper do
       params[:action] = 'new'
       params[:country] = 'Germany'
       params[:q] = 'google'
-      crumbs.should == %Q{<a href="http://test.host/search?country=Germany&amp;q=google">Search</a>}
+      crumbs.should == %Q{<a href="http://test.host/search?q=google&amp;country=Germany">Search</a>}
     end
     
     it "should eval single quoted title strings and interpolate them" do
@@ -133,6 +141,31 @@ describe BreadcrumbsHelper do
 
       @query = 'google'
       crumbs.should == %Q{<a href="http://test.host/search/google">Search Results (google)</a>}
+    end
+    
+    it "should support a list of actions to configure a trail" do
+      Breadcrumb.configure do
+        crumb :search_results, 'Search Results (#{@query})', :search_url
+        trail :search, [:create, :new], [:search_results]
+      end
+      
+      params[:controller] = 'search'
+      params[:action] = 'create'
+      crumbs.should == %Q{<a href="http://test.host/search/">Search Results ()</a>}
+      
+      params[:action] = 'new'
+      crumbs.should == %Q{<a href="http://test.host/search/">Search Results ()</a>}
+    end
+    
+    it "should support using the current url instead of a predefined one" do
+      Breadcrumb.configure do
+        crumb :search_results, 'Search Results (#{@query})', :current
+        trail :search, [:create, :new], [:search_results]
+      end
+      
+      params[:controller] = 'search'
+      params[:action] = 'new'
+      crumbs.should == %Q{<a href="http://test.host/search/new">Search Results ()</a>}
     end
     
     describe "when fetching parameters" do

@@ -8,9 +8,12 @@ class Breadcrumb
     instance.instance_eval &blk
   end
   
-  def trail(controller, action, trail)
+  def trail(controller, actions, trail)
     @trails ||= []
-    @trails << [{:controller => controller, :action => action}, trail]
+    actions = Array(actions)
+    actions.each do |action|
+      @trails << [{:controller => controller, :action => action}, trail]
+    end
   end
   
   def crumb(name, title, url, *params)

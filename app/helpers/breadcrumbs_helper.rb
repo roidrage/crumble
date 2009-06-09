@@ -23,7 +23,11 @@ module BreadcrumbsHelper
     when Hash
       send(crumb[1], fetch_parameters_recursive(crumb[2][:params]))
     else
-      send(crumb[1], *crumb[2].collect {|name| instance_variable_get("@#{name}")})
+      if crumb[1] == :current
+        params
+      else
+        send(crumb[1], *crumb[2].collect {|name| instance_variable_get("@#{name}")})
+      end
     end
   end
   
@@ -31,7 +35,7 @@ module BreadcrumbsHelper
     if crumb[2]
       fetch_parameterized_crumb_url(crumb)
     else
-      url = send(crumb_detail[1])
+      send(crumb_detail[1])
     end
   end
   
