@@ -35,6 +35,14 @@ describe BreadcrumbsHelper do
       super
     end
   end
+
+  def is_it_false?
+    false
+  end
+  
+  def its_true!
+    true
+  end
   
   User = Struct.new(:login)
   Article = Struct.new(:id)
@@ -127,7 +135,7 @@ describe BreadcrumbsHelper do
       params[:action] = 'new'
       params[:country] = 'Germany'
       params[:q] = 'google'
-      crumbs.should == %Q{<a href="http://test.host/search?q=google&amp;country=Germany">Search</a>}
+      crumbs.should == %Q{<a href="http://test.host/search?country=Germany&amp;q=google">Search</a>}
     end
     
     it "should eval single quoted title strings and interpolate them" do
@@ -171,7 +179,7 @@ describe BreadcrumbsHelper do
     it "should not consider a trail when it has a condition and it's not met" do
       Breadcrumb.configure do
         crumb :search_results, 'Search Results', :current
-        trail :search, [:create, :new], [:search_results], :if => lambda {false}
+        trail :search, [:create, :new], [:search_results], :if => :is_it_false?
       end
       
       params[:controller] = 'search'
@@ -182,7 +190,7 @@ describe BreadcrumbsHelper do
     it "should consider a trail when it has a condition and it's met" do
       Breadcrumb.configure do
         crumb :search_results, 'Search Results', :current
-        trail :search, [:create, :new], [:search_results], :if => lambda {true}
+        trail :search, [:create, :new], [:search_results], :if => :its_true!
       end
       
       params[:controller] = 'search'
