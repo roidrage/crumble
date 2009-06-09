@@ -31,5 +31,18 @@ describe Breadcrumb do
       
       Breadcrumb.instance.delimiter.should == "/"
     end
+    
+    it "should support contexts" do
+      Breadcrumb.configure do
+        context "user profile" do
+          crumb :profile, "Public Profile", :user_url, :user
+        end
+      end
+      
+      profile = Breadcrumb.instance.crumbs[:profile]
+      profile.title.should == "Public Profile"
+      profile.url.should == :user_url
+      profile.params.should == [:user]
+    end
   end
 end

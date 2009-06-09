@@ -36,6 +36,10 @@ class Breadcrumb
     @crumbs[name] = Crumb.new(name, title, url, params)
   end
   
+  def context(name)
+    yield
+  end
+  
   def delimit_with(delimiter)
     @delimiter = delimiter
   end
