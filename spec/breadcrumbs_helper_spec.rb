@@ -176,7 +176,7 @@ describe BreadcrumbsHelper do
       crumbs.should == %Q{<a href="http://test.host/search/new">Search Results ()</a>}
     end
     
-    it "should not consider a trail when it has a condition and it's not met" do
+    it "should not consider a trail when it has an :if condition and it's not met" do
       Breadcrumb.configure do
         crumb :search_results, 'Search Results', :current
         trail :search, [:create, :new], [:search_results], :if => :is_it_false?
@@ -187,10 +187,32 @@ describe BreadcrumbsHelper do
       crumbs.should == ""
     end
 
-    it "should consider a trail when it has a condition and it's met" do
+    it "should consider a trail when it has an :if condition and it's met" do
       Breadcrumb.configure do
         crumb :search_results, 'Search Results', :current
         trail :search, [:create, :new], [:search_results], :if => :its_true!
+      end
+      
+      params[:controller] = 'search'
+      params[:action] = 'new'
+      crumbs.should == %Q{<a href="http://test.host/search/new">Search Results</a>}
+    end
+
+    it "should not consider a trail when it has an :unless condition and it's not met" do
+      Breadcrumb.configure do
+        crumb :search_results, 'Search Results', :current
+        trail :search, [:create, :new], [:search_results], :unless => :its_true!
+      end
+      
+      params[:controller] = 'search'
+      params[:action] = 'new'
+      crumbs.should == ""
+    end
+
+    it "should consider a trail when it has an :unless condition and it's met" do
+      Breadcrumb.configure do
+        crumb :search_results, 'Search Results', :current
+        trail :search, [:create, :new], [:search_results], :unless => :is_it_false?
       end
       
       params[:controller] = 'search'

@@ -4,8 +4,13 @@ class Breadcrumb
   include Singleton
   Trail = Struct.new(:controller, :action, :trail, :options) do
     def condition_met?(obj)
-      condition = options[:if]
-      condition.nil? or obj.send(condition)
+      if options[:if]
+        obj.send(options[:if])
+      elsif options[:unless]
+        !obj.send(options[:unless])
+      else
+        true
+      end
     end
   end
   
