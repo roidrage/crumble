@@ -14,7 +14,7 @@ Usage
 
 I wanted to have a rather simple API to configure breadcrumbs, so I made one. Basically you configure your breadcrumbs in an initializers, e.g. config/initializers/breadcrumbs.rb like so:
 
-    Breadcrumb.do
+    Breadcrumb.configure do
       # Specify name, link title and the URL to link to
       crumb :profile, "Your Profile", :account_url
       crumb :root, "Home", :root_url
