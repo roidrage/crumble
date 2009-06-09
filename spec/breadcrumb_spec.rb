@@ -7,7 +7,10 @@ describe Breadcrumb do
         trail :accounts, :edit, [:profile, :your_account]
       end
       
-      Breadcrumb.instance.trails.last.should == [{:controller => :accounts, :action => :edit}, [:profile, :your_account]]
+      trail = Breadcrumb.instance.trails.last
+      trail.controller.should == :accounts
+      trail.action.should == :edit
+      trail.trail.should == [:profile, :your_account]
     end
     
     it "should add crumbs" do
@@ -15,7 +18,10 @@ describe Breadcrumb do
         crumb :profile, "Public Profile", :user_url, :user
       end
       
-      Breadcrumb.instance.crumbs[:profile].should == ["Public Profile", :user_url, [:user]]
+      profile = Breadcrumb.instance.crumbs[:profile]
+      profile.title.should == "Public Profile"
+      profile.url.should == :user_url
+      profile.params.should == [:user]
     end
     
     it "should store the delimiter" do

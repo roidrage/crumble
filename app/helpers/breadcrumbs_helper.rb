@@ -1,9 +1,9 @@
 module BreadcrumbsHelper
   def crumbs
-    (Breadcrumb.instance.trails || []).each do |condition, trail|
-      if condition[:controller].to_sym == params[:controller].to_sym and
-        condition[:action].to_sym == params[:action].to_sym
-        return calculate_breadcrumb_trail(trail)
+    (Breadcrumb.instance.trails || []).each do |trail|
+      if trail.controller.to_sym == params[:controller].to_sym and
+        trail.action.to_sym == params[:action].to_sym
+        return calculate_breadcrumb_trail(trail.trail)
       end
     end
     ""
@@ -11,31 +11,31 @@ module BreadcrumbsHelper
   
   def calculate_breadcrumb_trail(trail)
     breadcrumb_trail = []
-    trail.each do |crumb|
-      crumb_detail = Breadcrumb.instance.crumbs[crumb]
-      breadcrumb_trail << link_to(eval(%Q{"#{crumb_detail[0]}"}), fetch_crumb_url(crumb_detail))
+    trail.each do |crummy|
+      crumb = Breadcrumb.instance.crumbs[crummy]
+      breadcrumb_trail << link_to(eval(%Q{"#{crumb.title}"}), fetch_crumb_url(crumb))
     end
     breadcrumb_trail.join(Breadcrumb.instance.delimiter)
   end
   
   def fetch_parameterized_crumb_url(crumb)
-    case crumb[2]
+    case crumb.params
     when Hash
-      send(crumb[1], fetch_parameters_recursive(crumb[2][:params]))
+      send(crumb.url, fetch_parameters_recursive(crumb.params[:params]))
     else
-      if crumb[1] == :current
+      if crumb.url == :current
         params
       else
-        send(crumb[1], *crumb[2].collect {|name| instance_variable_get("@#{name}")})
+        send(crumb.url, *crumb.params.collect {|name| instance_variable_get("@#{name}")})
       end
     end
   end
   
   def fetch_crumb_url(crumb)
-    if crumb[2]
+    if crumb.params
       fetch_parameterized_crumb_url(crumb)
     else
-      send(crumb_detail[1])
+      send(crumb.url)
     end
   end
   
