@@ -2,7 +2,12 @@ require 'singleton'
 
 class Breadcrumb
   include Singleton
-  Trail = Struct.new(:controller, :action, :trail)
+  Trail = Struct.new(:controller, :action, :trail, :options) do
+    def condition_met?
+      options[:if].nil? or (options[:if] and options[:if].call)
+    end
+  end
+  
   Crumb = Struct.new(:name, :title, :url, :params)
   
   attr_accessor :trails, :crumbs, :delimiter
@@ -11,11 +16,11 @@ class Breadcrumb
     instance.instance_eval &blk
   end
   
-  def trail(controller, actions, trail)
+  def trail(controller, actions, trail, options = {})
     @trails ||= []
     actions = Array(actions)
     actions.each do |action|
-      @trails << Trail.new(controller, action, trail)
+      @trails << Trail.new(controller, action, trail, options)
     end
   end
   
