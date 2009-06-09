@@ -3,8 +3,9 @@ require 'singleton'
 class Breadcrumb
   include Singleton
   Trail = Struct.new(:controller, :action, :trail, :options) do
-    def condition_met?
-      options[:if].nil? or (options[:if] and options[:if].call)
+    def condition_met?(obj)
+      condition = options[:if]
+      condition.nil? or obj.instance_eval{condition.call}
     end
   end
   

@@ -3,7 +3,7 @@ module BreadcrumbsHelper
     (Breadcrumb.instance.trails || []).each do |trail|
       if trail.controller.to_sym == params[:controller].to_sym and
         trail.action.to_sym == params[:action].to_sym
-        next unless trail.condition_met?
+        next unless trail.condition_met?(self)
         return calculate_breadcrumb_trail(trail.trail)
       end
     end
