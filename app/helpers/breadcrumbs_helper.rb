@@ -22,12 +22,22 @@ module BreadcrumbsHelper
   def fetch_parameterized_crumb_url(crumb)
     case crumb.params
     when Hash
-      send(crumb.url, fetch_parameters_recursive(crumb.params[:params]))
+      if crumb.params[:params]
+        send(crumb.url, fetch_parameters_recursive(crumb.params[:params]))
+      end
     else
       if crumb.url == :current
         params
       else
-        send(crumb.url, *crumb.params.collect {|name| instance_variable_get("@#{name}")})
+        prams = crumb.params.collect do |name|
+          case name
+          when Symbol
+            instance_variable_get("@#{name}")
+          when String
+            instance_eval(name)
+          end
+        end
+        send(crumb.url, *prams)
       end
     end
   end
