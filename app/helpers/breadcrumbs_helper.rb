@@ -24,6 +24,9 @@ module BreadcrumbsHelper
     when Hash
       if crumb.params[:params]
         send(crumb.url, fetch_parameters_recursive(crumb.params[:params]))
+      else
+        result = instance_eval("@#{assemble_crumb_url_parameter(crumb.params).join(".")}")
+        send(crumb.url, result)
       end
     else
       if crumb.url == :current
@@ -66,5 +69,17 @@ module BreadcrumbsHelper
       end
     end
     parameters
+  end
+  
+  def assemble_crumb_url_parameter(params)
+    result = []
+    params.to_a.flatten.collect do |step|
+      result << if step.is_a?(Hash)
+        assemble_crumb_url_parameter(step)
+      else
+        step
+      end
+    end
+    result
   end
 end

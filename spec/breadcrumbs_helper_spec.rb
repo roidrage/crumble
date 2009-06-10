@@ -230,6 +230,28 @@ describe BreadcrumbsHelper do
       params[:action] = 'new'
       crumbs.should == %Q{<a href="http://test.host/search/jonathan">Search Results</a>}
     end
+
+    it "should support resolving parameters for url methods derived from a hash pointing to an object hierarchy" do
+      Breadcrumb.configure do
+        crumb :search_results, 'Search Results', :search_url, :user => :login
+        trail :search, [:create, :new], [:search_results]
+      end
+      
+      params[:controller] = 'search'
+      params[:action] = 'new'
+      crumbs.should == %Q{<a href="http://test.host/search/jonathan">Search Results</a>}
+    end
+
+    it "should support resolving parameters for url methods derived from a hash pointing to a nested object hierarchy" do
+      Breadcrumb.configure do
+        crumb :search_results, 'Search Results', :search_url, :user => {:login => :to_s}
+        trail :search, [:create, :new], [:search_results]
+      end
+      
+      params[:controller] = 'search'
+      params[:action] = 'new'
+      crumbs.should == %Q{<a href="http://test.host/search/jonathan">Search Results</a>}
+    end
     
     describe "when fetching parameters" do
       it "should support nested parameter attributes" do
