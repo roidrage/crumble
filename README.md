@@ -31,6 +31,15 @@ You can hand over parameters to the URL generator methods, the parameters are ex
 
     crumb :blog_comment, "Your Profile", :blog_comment_url, :blog, :comment
 
+If you need to fetch a nested object from an existing one, you can do it with nested hashes, nesting knowing now boundaries, as long as a tree of objects conforming to them (in this case @user.blog.name) exists:
+
+    crumb :blog, "Your Blog", :blog_url, :user => {:blog => :name}
+    crumb :blog, "Your Blog", :blog_url, :user => :blog
+
+If you really need to (only if you really, really need to), you can specify a string to be eval'd at runtime as parameter for the URL method. Brace yourself, it's not pretty:
+
+    crumb :blog, "Your Blog", :blog_url, '@user.blog'
+
 You can also add URL parameters derived from the parameters of the current request:
 
     crumb :search, "Search", :new_search_url, :params => :q
@@ -46,6 +55,16 @@ And nested parameters:
 If you want to make the link title content dynamic, just use single quotes and rely on interpolation, you just need to ensure the interpolated code exists in the context of your helpers:
 
     crumb :search, 'Search (Keywords: #{params[:q]})', :new_search_url, :params => :q
+
+If you don't want to specify any URL method at all, just use :current, it'll just use all the parameters of the current action, of course being aware that you can't have an URL method called current to rely on. But who would do that anyway?
+
+    crumb :search, 'Search (Keywords: #{params[:q]})', :current
+
+You can base trails on conditions using :unless and :if. Both need to point to a method that exists in the context of the view.
+
+    trail :home, :index, [:root], :unless => :logged_in?
+    trail :home, :index, [:your_account], :if => :logged_in?
+
 Then, in your views, just insert the following:
 
     <%= crumbs %>
