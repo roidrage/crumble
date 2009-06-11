@@ -2,7 +2,7 @@ require 'singleton'
 
 class Breadcrumb
   include Singleton
-  Trail = Struct.new(:controller, :action, :trail, :options) do
+  Trail = Struct.new(:controller, :action, :trail, :options, :line) do
     def condition_met?(obj)
       if options[:if]
         obj.send(options[:if])
@@ -29,7 +29,7 @@ class Breadcrumb
     @trails ||= []
     actions = Array(actions)
     actions.each do |action|
-      @trails << Trail.new(controller, action, trail, options)
+      @trails << Trail.new(controller, action, trail, options, caller[2].split(":")[1])
     end
   end
   
@@ -58,7 +58,7 @@ class Breadcrumb
     if invalid_trails.any?
       messages = []
       invalid_trails.each do |trail|
-        messages << "Trail for #{trail.first.controller}/#{trail.first.action} references non-existing crumb '#{trail.last}'"
+        messages << "Trail for #{trail.first.controller}/#{trail.first.action} references non-existing crumb '#{trail.last}' (configuration file line: #{trail.first.line})"
       end
       raise messages.join("\n")
     end

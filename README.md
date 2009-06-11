@@ -65,6 +65,10 @@ You can base trails on conditions using :unless and :if. Both need to point to a
     trail :home, :index, [:root], :unless => :logged_in?
     trail :home, :index, [:your_account], :if => :logged_in?
 
+Your trails can also relate to a bunch of actions, just specify an array instead.
+
+    trail :profiles, [:show, :edit], [:profile]
+
 To keep your breadcrumbs definition neat and tidy, wrap them based on their context with a handy method called, you guessed it, context:
 
     context "user profile" do
@@ -77,7 +81,14 @@ Dump your trails and crumbs in there and bask in the glory of an easier readable
 Then, in your views, just insert the following:
 
     <%= crumbs %>
-    
+
+If your trails reference non-existing crumbs, the plugin will raise an error telling you where in your configuration the illegal reference was made.
+
+Future
+======
+
+If you think something's missing, let me know at <meyer@paperplanes.de>, or even better, send patches, including tests.
+
 License
 =======
 
