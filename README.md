@@ -65,6 +65,15 @@ You can base trails on conditions using :unless and :if. Both need to point to a
     trail :home, :index, [:root], :unless => :logged_in?
     trail :home, :index, [:your_account], :if => :logged_in?
 
+To keep your breadcrumbs definition neat and tidy, wrap them based on their context with a handy method called, you guessed it, context:
+
+    context "user profile" do
+      trail :home, :index, [:root], :unless => :logged_in?
+      trail :home, :index, [:your_account], :if => :logged_in?
+    end
+
+Dump your trails and crumbs in there and bask in the glory of an easier readable crumbs definition.
+
 Then, in your views, just insert the following:
 
     <%= crumbs %>
