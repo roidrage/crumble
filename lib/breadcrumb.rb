@@ -19,7 +19,10 @@ class Breadcrumb
   attr_accessor :trails, :crumbs, :delimiter
   
   def self.configure(&blk)
+    instance.crumbs = {}
+    instance.trails = []
     instance.instance_eval &blk
+    instance.validate
   end
   
   def trail(controller, actions, trail, options = {})
@@ -43,4 +46,22 @@ class Breadcrumb
   def delimit_with(delimiter)
     @delimiter = delimiter
   end
+  
+  def validate
+    invalid_trails = []
+    trails.each do |trail|
+      trail.trail.collect do |t|
+        invalid_trails << [trail, t] if crumbs[t].nil?
+      end
+    end
+    
+    if invalid_trails.any?
+      messages = []
+      invalid_trails.each do |trail|
+        messages << "Trail for #{trail.first.controller}/#{trail.first.action} references non-existing crumb '#{trail.last}'"
+      end
+      raise messages.join("\n")
+    end
+  end
+  
 end

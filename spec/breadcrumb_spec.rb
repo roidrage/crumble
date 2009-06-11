@@ -4,6 +4,9 @@ describe Breadcrumb do
   describe "when configuring the instance" do
     it "should add trails" do
       Breadcrumb.configure do
+        crumb :profile, "Public Profile", :user_url, :user
+        crumb :your_account, "Public Profile", :user_url, :user
+        
         trail :accounts, :edit, [:profile, :your_account]
       end
       
@@ -43,6 +46,23 @@ describe Breadcrumb do
       profile.title.should == "Public Profile"
       profile.url.should == :user_url
       profile.params.should == [:user]
+    end
+    
+    it "should not accept non-existing trails in crumb definitions" do
+      lambda {
+        Breadcrumb.configure do
+          trail :accounts, :edit, [:profile]
+        end
+      }.should raise_error(RuntimeError, "Trail for accounts/edit references non-existing crumb 'profile'")
+    end
+    
+    it "should include errors for multiple missing crumb definitions" do
+      lambda {
+        Breadcrumb.configure do
+          trail :accounts, :edit, [:profile]
+          trail :accounts, :show, [:profile]
+        end
+      }.should raise_error(RuntimeError, "Trail for accounts/edit references non-existing crumb 'profile'\nTrail for accounts/show references non-existing crumb 'profile'")
     end
   end
 end
