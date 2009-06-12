@@ -18,6 +18,8 @@ Spec::Runner.configure do |config|
     Breadcrumb.instance.crumbs = @old_crumbs
     Breadcrumb.instance.trails = @old_trails
   end
+
+  public
   
   def edit_account_url
     "http://test.host/account/edit"
@@ -46,7 +48,7 @@ Spec::Runner.configure do |config|
       super
     end
   end
-
+  
   def is_it_false?
     false
   end

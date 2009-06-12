@@ -10,6 +10,10 @@ describe BreadcrumbsHelper do
 
   attr_accessor :params
   
+  def controller
+    self
+  end
+  
   before(:each) do
     @params = {}
     @user = User.new("jonathan")
@@ -179,6 +183,28 @@ describe BreadcrumbsHelper do
       params[:controller] = 'search'
       params[:action] = 'new'
       crumbs.should == %Q{<a href="http://test.host/search/new">Search Results</a>}
+    end
+    
+    it "should call blocks as :unless parameters" do
+      Breadcrumb.configure do
+        crumb :search_results, 'Search Results', :current
+        trail :search, [:create, :new], [:search_results], :unless => lambda {|controller| controller.its_true!}
+      end
+      
+      params[:controller] = 'search'
+      params[:action] = 'new'
+      crumbs.should == ""
+    end
+
+    it "should call blocks as :if parameters" do
+      Breadcrumb.configure do
+        crumb :search_results, 'Search Results', :current
+        trail :search, [:create, :new], [:search_results], :if => lambda {|controller| controller.its_true!}
+      end
+      
+      params[:controller] = 'search'
+      params[:action] = 'new'
+      crumbs.should == "<a href=\"http://test.host/search/new\">Search Results</a>"
     end
     
     it "should support resolving parameters for url methods derived from a string" do

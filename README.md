@@ -65,6 +65,10 @@ You can base trails on conditions using :unless and :if. Both need to point to a
     trail :home, :index, [:root], :unless => :logged_in?
     trail :home, :index, [:your_account], :if => :logged_in?
 
+Alternatively you can specify a block that takes the controller as an argument.
+
+    trail :home, :index, [:your_account], :if => lambda {|controller| controller.logged_in?}
+
 Your trails can also relate to a bunch of actions, just specify an array instead.
 
     trail :profiles, [:show, :edit], [:profile]

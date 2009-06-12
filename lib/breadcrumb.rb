@@ -5,11 +5,19 @@ class Breadcrumb
   Trail = Struct.new(:controller, :action, :trail, :options, :line) do
     def condition_met?(obj)
       if options[:if]
-        obj.send(options[:if])
+        evaluate(obj, options[:if])
       elsif options[:unless]
-        !obj.send(options[:unless])
+        !evaluate(obj, options[:unless])
       else
         true
+      end
+    end
+    
+    def evaluate(obj, condition)
+      if condition.respond_to?(:call)
+        condition.call(obj.controller)
+      else
+        obj.send(condition)
       end
     end
   end
