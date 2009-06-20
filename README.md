@@ -86,6 +86,12 @@ Then, in your views, just insert the following:
 
     <%= crumbs %>
 
+Don't forget to include the helper in the affected controllers:
+
+    class ApplicationController < ActionController::Base
+      helper :breadcrumbs
+    end
+
 If your trails reference non-existing crumbs, the plugin will raise an error telling you where in your configuration the illegal reference was made.
 
 Future
