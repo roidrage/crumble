@@ -240,6 +240,18 @@ describe BreadcrumbsHelper do
       crumbs.should == %Q{<a href="http://test.host/search/jonathan">Search Results</a>}
     end
     
+    it "return the same breadcrumbs on subsequent calls" do
+      Breadcrumb.configure do
+        crumb :your_account, "Your Account", :edit_account_url
+        trail :accounts, :index, [:your_account]
+      end
+      params[:controller] = 'accounts'
+      params[:action] = 'index'
+      once = crumbs
+      twice = crumbs
+      once.should == twice
+    end
+    
     describe "when fetching parameters" do
       it "should support nested parameter attributes" do
         Breadcrumb.configure do
