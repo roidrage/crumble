@@ -82,6 +82,13 @@ To keep your breadcrumbs definition neat and tidy, wrap them based on their cont
 
 Dump your trails and crumbs in there and bask in the glory of an easier readable crumbs definition.
 
+If you don't want to have the last crumb linked, no problem at all, we can do that too:
+
+    Breadcrumb.configure do
+      dont_link_last_crumb
+    end
+
+Yep, that's it. Include that in your breadcrumbs definition and you're done.
 Then, in your views, just insert the following:
 
     <%= crumbs %>

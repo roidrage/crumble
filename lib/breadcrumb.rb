@@ -55,6 +55,18 @@ class Breadcrumb
     @delimiter = delimiter
   end
   
+  def dont_link_last_crumb
+    @last_crumb_linked = true
+  end
+
+  def link_last_crumb
+    @last_crumb_linked = false
+  end
+  
+  def last_crumb_linked?
+    @last_crumb_linked
+  end
+  
   def validate
     invalid_trails = []
     trails.each do |trail|

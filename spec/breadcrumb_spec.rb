@@ -35,6 +35,22 @@ describe Breadcrumb do
       Breadcrumb.instance.delimiter.should == "/"
     end
     
+    it "should set the flag not to link the last crumb" do
+      Breadcrumb.configure do
+        dont_link_last_crumb
+      end
+      
+      Breadcrumb.instance.last_crumb_linked?.should == true
+    end
+
+    it "should unset the flag not to link the last crumb" do
+      Breadcrumb.configure do
+        link_last_crumb
+      end
+      
+      Breadcrumb.instance.last_crumb_linked?.should == false
+    end
+    
     it "should support contexts" do
       Breadcrumb.configure do
         context "user profile" do
@@ -53,7 +69,7 @@ describe Breadcrumb do
         Breadcrumb.configure do
           trail :accounts, :edit, [:profile]
         end
-      }.should raise_error(RuntimeError, "Trail for accounts/edit references non-existing crumb 'profile' (configuration file line: 54)")
+      }.should raise_error(RuntimeError, "Trail for accounts/edit references non-existing crumb 'profile' (configuration file line: 70)")
     end
     
     it "should include errors for multiple missing crumb definitions" do
@@ -62,7 +78,7 @@ describe Breadcrumb do
           trail :accounts, :edit, [:profile]
           trail :accounts, :show, [:profile]
         end
-      }.should raise_error(RuntimeError, "Trail for accounts/edit references non-existing crumb 'profile' (configuration file line: 62)\nTrail for accounts/show references non-existing crumb 'profile' (configuration file line: 63)")
+      }.should raise_error(RuntimeError, "Trail for accounts/edit references non-existing crumb 'profile' (configuration file line: 78)\nTrail for accounts/show references non-existing crumb 'profile' (configuration file line: 79)")
     end
   end
 end

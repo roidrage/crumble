@@ -20,6 +20,7 @@ describe BreadcrumbsHelper do
     @article = Article.new(1)
     Breadcrumb.configure do
       delimit_with " / "
+      link_last_crumb
     end
   end
   
@@ -100,7 +101,7 @@ describe BreadcrumbsHelper do
       params[:action] = 'new'
       params[:country] = 'Germany'
       params[:q] = 'google'
-      crumbs.should == %Q{<a href="http://test.host/search?country=Germany&amp;q=google">Search</a>}
+      crumbs.should == %Q{<a href="http://test.host/search?q=google&amp;country=Germany">Search</a>}
     end
     
     it "should eval single quoted title strings and interpolate them" do
@@ -240,7 +241,7 @@ describe BreadcrumbsHelper do
       crumbs.should == %Q{<a href="http://test.host/search/jonathan">Search Results</a>}
     end
     
-    it "return the same breadcrumbs on subsequent calls" do
+    it "should return the same breadcrumbs on subsequent calls" do
       Breadcrumb.configure do
         crumb :your_account, "Your Account", :edit_account_url
         trail :accounts, :index, [:your_account]
@@ -250,6 +251,19 @@ describe BreadcrumbsHelper do
       once = crumbs
       twice = crumbs
       once.should == twice
+    end
+    
+    it "should not link the last link when the option was specified" do
+      Breadcrumb.configure do
+        trail :accounts, :show, [:profile, :your_account]
+        crumb :profile, "Public Profile", :user_url, :user
+        crumb :your_account, "Your Account", :edit_account_url
+        dont_link_last_crumb
+      end
+      
+      params[:controller] = 'accounts'
+      params[:action] = 'show'
+      crumbs.should == %Q{<a href="http://test.host/f/jonathan">Public Profile</a> / Your Account}
     end
     
     describe "when fetching parameters" do

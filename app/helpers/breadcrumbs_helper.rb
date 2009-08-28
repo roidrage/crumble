@@ -14,7 +14,11 @@ module BreadcrumbsHelper
     breadcrumb_trail = []
     trail.each do |crummy|
       crumb = Breadcrumb.instance.crumbs[crummy]
-      breadcrumb_trail << link_to(eval(%Q{"#{crumb.title}"}), fetch_crumb_url(crumb))
+      if Breadcrumb.instance.last_crumb_linked? and crummy == trail.last
+        breadcrumb_trail << eval(%Q{"#{crumb.title}"})
+      else
+        breadcrumb_trail << link_to(eval(%Q{"#{crumb.title}"}), fetch_crumb_url(crumb))
+      end
     end
     breadcrumb_trail.join(Breadcrumb.instance.delimiter)
   end
