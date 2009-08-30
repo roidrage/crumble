@@ -265,6 +265,18 @@ describe BreadcrumbsHelper do
       params[:action] = 'show'
       crumbs.should == %Q{<a href="http://test.host/f/jonathan">Public Profile</a> / Your Account}
     end
+
+    it "should not link the last link when the option was specified and only one crumb is in the trail" do
+      Breadcrumb.configure do
+        trail :accounts, :show, [:profile]
+        crumb :profile, "Public Profile", :user_url, :user
+        dont_link_last_crumb
+      end
+      
+      params[:controller] = 'accounts'
+      params[:action] = 'show'
+      crumbs.should == %Q{Public Profile}
+    end
     
     describe "when fetching parameters" do
       it "should support nested parameter attributes" do
