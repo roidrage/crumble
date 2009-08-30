@@ -26,6 +26,10 @@ class Breadcrumb
   
   attr_accessor :trails, :crumbs, :delimiter
   
+  def initialize
+    @last_crumb_linked = true
+  end
+  
   def self.configure(&blk)
     instance.crumbs = {}
     instance.trails = []
@@ -56,11 +60,11 @@ class Breadcrumb
   end
   
   def dont_link_last_crumb
-    @last_crumb_linked = true
+    @last_crumb_linked = false
   end
 
   def link_last_crumb
-    @last_crumb_linked = false
+    @last_crumb_linked = true
   end
   
   def last_crumb_linked?

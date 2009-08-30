@@ -40,7 +40,7 @@ describe Breadcrumb do
         dont_link_last_crumb
       end
       
-      Breadcrumb.instance.last_crumb_linked?.should == true
+      Breadcrumb.instance.last_crumb_linked?.should == false
     end
 
     it "should unset the flag not to link the last crumb" do
@@ -48,7 +48,7 @@ describe Breadcrumb do
         link_last_crumb
       end
       
-      Breadcrumb.instance.last_crumb_linked?.should == false
+      Breadcrumb.instance.last_crumb_linked?.should == true
     end
     
     it "should support contexts" do
