@@ -9,11 +9,11 @@ Installation
 
 Requires Rails 2.3.
 
-Note: If you have configured Rails to reload all plugins in development mode like so:
+Note: If you have configured Rails to reload all plugins in development mode, then putting your breadcrumbs configuration into an initializer won't work, since the classes, and therefore the breadcrumbs configuration will be unloaded after the request, and not be reloaded before the next one.
+
+This will cause the problem. Either disable it, or let Rails use the default, which is to not reload plugins.
 
     config.reload_plugins = true
-
-Then putting your breadcrumbs configuration into an initializer won't work, since the classes, and therefore the breadcrumbs configuration will be unloaded after the request, and not be reloaded before the next one.
 
 Usage
 =====
