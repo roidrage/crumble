@@ -5,6 +5,16 @@ It's a tiny combination of a helper and a simple configuration class to make bre
 Installation
 ============
 
+The gem is hosted on gemcutter, so if you haven’t already, add it as a gem source:
+
+    gem sources -a http://gemcutter.org/
+
+Then install the Formtastic gem (recommended):
+
+    gem install crumble
+
+Alternatively you can also install it as a Rails plugin:
+
     script/plugin install git://github.com/mattmatt/crumble.git
 
 Requires Rails 2.3.
@@ -102,7 +112,7 @@ Then, in your views, just insert the following:
 Don't forget to include the helper in the affected controllers:
 
     class ApplicationController < ActionController::Base
-      helper :breadcrumbs
+        helper :breadcrumbs
     end
 
 If your trails reference non-existing crumbs, the plugin will raise an error telling you where in your configuration the illegal reference was made.
