@@ -1,1 +1,1 @@
-require File.join(File.dirname(__FILE__), *%w[.. lib breadcrumb])
+require File.expand_path(File.dirname(__FILE__) + "/../lib/breadcrumb")
