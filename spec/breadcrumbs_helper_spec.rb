@@ -28,6 +28,56 @@ describe BreadcrumbsHelper do
   describe "when getting the breadcrumbs" do
     before(:each) do
     end
+
+    describe "i18n support" do
+      it "should get the title from I18n based in the crumb name" do
+        I18n.backend.store_translations(:en, {:breadcrumbs => {:profile => "Your Profile"}})
+        Breadcrumb.configure do
+          crumb :profile, nil, :user_url, :user
+          trail :accounts, :edit, [:profile]
+        end
+        params[:controller] = 'accounts'
+        params[:action] = 'edit'
+        crumbs.should == %Q{<a href="http://test.host/f/jonathan">Your Profile</a>}
+      end
+
+      it "should get the title from I18n based in the crumb name in the last crumb when the option was specified" do
+        I18n.backend.store_translations(:en, {:breadcrumbs => {:profile => "Your Profile"}})
+        Breadcrumb.configure do
+          crumb :profile, nil, :user_url, :user
+          trail :accounts, :edit, [:profile]
+          dont_link_last_crumb
+        end
+        params[:controller] = 'accounts'
+        params[:action] = 'edit'
+        crumbs.should == %Q{Your Profile}
+      end
+
+      describe "i18n parameters" do
+        it "should be able to interpolate parameters in a hash" do
+          I18n.backend.store_translations(:en, {:breadcrumbs => {:profile => "Your Profile - {{login}}"}})
+          Breadcrumb.configure do
+            crumb :profile, {:login => {:user => :login}}, :user_url, :user
+            trail :accounts, :edit, [:profile]
+          end
+
+          params[:controller] = 'accounts'
+          params[:action] = 'edit'
+          crumbs.should == %Q{<a href="http://test.host/f/jonathan">Your Profile - jonathan</a>}
+        end
+      end
+
+      it "should use title instead I18n.t message" do
+        I18n.backend.store_translations(:en, {:breadcrumbs => {:profile => "Your Profile"}})
+        Breadcrumb.configure do
+          crumb :profile, 'Your Profile', :user_url, :user
+          trail :accounts, :edit, [:profile]
+        end
+        params[:controller] = 'accounts'
+        params[:action] = 'edit'
+        crumbs.should == %Q{<a href="http://test.host/f/jonathan">Your Profile</a>}
+      end
+    end
     
     it "should calculate the urls in the breadcrumbs" do
       Breadcrumb.configure do
@@ -103,6 +153,23 @@ describe BreadcrumbsHelper do
       params[:country] = 'Germany'
       params[:q] = 'google'
       crumbs.should == %Q{<a href="http://test.host/search?q=google&amp;country=Germany">Search</a>}
+    end
+
+    it "should add multiple parameters to the url not need to test the order" do
+      Breadcrumb.configure do
+        crumb :search, "Search", :search_url, :params => [:q, :country]
+        trail :search, :new, [:search]
+      end
+
+      params[:controller] = 'search'
+      params[:action] = 'new'
+      params[:country] = 'Germany'
+      params[:q] = 'google'
+
+      params_array = URI.parse(crumbs[/.*href=[\"'](.*)[\"']/,1]).query.split(/=|(&amp;)/)
+      %w(q google country Germany).each do |key|
+        params_array.should include(key)
+      end
     end
     
     it "should eval single quoted title strings and interpolate them" do

@@ -15,9 +15,9 @@ module BreadcrumbsHelper
     trail.each do |crummy|
       crumb = Breadcrumb.instance.crumbs[crummy]
       if not Breadcrumb.instance.last_crumb_linked? and crummy == trail.last
-        breadcrumb_trail << eval(%Q{"#{crumb.title}"})
+        breadcrumb_trail << eval(%Q{"#{assemble_crumb_title(crumb)}"})        
       else
-        breadcrumb_trail << link_to(eval(%Q{"#{crumb.title}"}), fetch_crumb_url(crumb))
+        breadcrumb_trail << link_to(eval(%Q{"#{assemble_crumb_title(crumb)}"}), fetch_crumb_url(crumb))
       end
     end
     breadcrumb_trail.join(Breadcrumb.instance.delimiter)
@@ -85,5 +85,19 @@ module BreadcrumbsHelper
       end
     end
     result
+  end
+
+  def assemble_crumb_title(crumb)
+    if crumb.title.is_a?(Hash) # We expect the name of the parameters with the code to evaluate
+      i18n_params = {}
+      crumb.title.each_pair do |key, value|
+        i18n_params[key] = instance_eval("@#{assemble_crumb_url_parameter(value).join(".")}")
+      end
+      I18n.t(crumb.name, {:scope => "breadcrumbs"}.merge!(i18n_params))
+    elsif crumb.title.nil?
+      I18n.t(crumb.name, :scope => "breadcrumbs")
+    else
+      crumb.title
+    end
   end
 end

@@ -76,6 +76,33 @@ If you don't want to specify any URL method at all, just use :current, it'll jus
 
     crumb :search, 'Search (Keywords: #{params[:q]})', :current
 
+Internationalization usage
+
+For example, if you want to localize your menu, define a new breadcrumbs node in your .yml file with all the keys for your elements.
+    # config/locales/en.yml
+    en:
+      breadcrumbs:
+        homepage: Homepage
+        profile: Your Profile
+        profile_dynamic: Hi {{name}}
+
+    # config/locales/es.yml
+    es:
+      breadcrumbs:
+        homepage: Homepage
+        profile: Tu perfil
+        profile_dynamic: Hola {{name}}
+
+Then you can define the title of your crum as:
+
+     crumb :profile, nil, :account_url
+
+Crumble find your locale for the scope "breadcrumbs.#{crumb.name}"
+
+If you want to make the I18n title content dynamic, just use a hash with the same key as the i18n param and with a hash value that will be interpolate to @user.name in this case:
+
+      crumb :profile_dynamic, {:name => {:user => :name}}, :account_url
+
 You can base trails on conditions using :unless and :if. Both need to point to a method that exists in the context of the view.
 
     trail :home, :index, [:root], :unless => :logged_in?
