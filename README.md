@@ -149,6 +149,11 @@ Future
 
 If you think something's missing, let me know at <meyer@paperplanes.de>, or even better, send patches, including tests.
 
+Contributors
+===========
+
+* Paco Guzmán (i18n support)
+
 License
 =======
 
