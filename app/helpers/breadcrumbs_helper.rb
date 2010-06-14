@@ -4,7 +4,9 @@ module BreadcrumbsHelper
       if trail.controller.to_sym == params[:controller].to_sym and
         trail.action.to_sym == params[:action].to_sym
         next unless trail.condition_met?(self)
-        return calculate_breadcrumb_trail(trail.trail)
+        breadcrumb_trails = calculate_breadcrumb_trail(trail.trail)
+        breadcrumb_trails = breadcrumb_trails.html_safe if breadcrumb_trails.respond_to? :html_safe
+        return breadcrumb_trails
       end
     end
     ""
