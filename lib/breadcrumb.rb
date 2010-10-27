@@ -1,4 +1,5 @@
 require 'singleton'
+require 'crumble/railtie' if defined?(::Rails::Railtie)
 
 class Breadcrumb
   include Singleton

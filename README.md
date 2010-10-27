@@ -5,11 +5,13 @@ It's a tiny combination of a helper and a simple configuration class to make bre
 Installation
 ============
 
+1. Rails 2.3
+
 The gem is hosted on gemcutter, so if you haven’t already, add it as a gem source:
 
     gem sources -a http://gemcutter.org/
 
-Then install the Formtastic gem (recommended):
+Then install the Crumble gem (recommended):
 
     gem install crumble
 
@@ -24,6 +26,14 @@ Note: If you have configured Rails to reload all plugins in development mode, th
 This will cause the problem. Either disable it, or let Rails use the default, which is to not reload plugins.
 
     config.reload_plugins = true
+
+2. Rails 3
+
+In Gemfile add:
+
+    source 'http://rubygems.org'
+    # ...
+    gem 'crumble', :require => 'breadcrumb'
 
 Usage
 =====
