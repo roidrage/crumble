@@ -51,6 +51,9 @@ I wanted to have a rather simple API to configure breadcrumbs, so I made one. Ba
       
       # Specify the delimiter for the crumbs
       delimit_with "/"
+		  add_first_css_class_name 'first'
+		  add_last_css_class_name 'last'
+		  add_wrapper_html '<p id="breadcrumbs" class="rbox">%{crumbs}</p>'
     end
 
 You can hand over parameters to the URL generator methods, the parameters are expected to exist as instance variables in your controller/helper:
