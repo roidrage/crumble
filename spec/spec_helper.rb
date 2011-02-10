@@ -4,7 +4,7 @@ gem 'rspec'
 require "#{File.dirname(__FILE__)}/../app/helpers/breadcrumbs_helper"
 require "#{File.dirname(__FILE__)}/../lib/breadcrumb"
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
 
   config.before(:each) do
     @old_trails = Breadcrumb.instance.trails
