@@ -94,14 +94,14 @@ For example, if you want to localize your menu, define a new breadcrumbs node in
       breadcrumbs:
         homepage: Homepage
         profile: Your Profile
-        profile_dynamic: Hi {{name}}
+        profile_dynamic: Hi %{name}
 
     # config/locales/es.yml
     es:
       breadcrumbs:
         homepage: Homepage
         profile: Tu perfil
-        profile_dynamic: Hola {{name}}
+        profile_dynamic: Hola %{name}
 
 Then you can define the title of your crum as:
 
