@@ -71,7 +71,7 @@ module BreadcrumbsHelper
       end
     when Hash
       params_hash.each do |pram, nested|
-        parameters[pram] = fetch_parameters_recursive(nested, params[pram])
+        parameters[pram] = fetch_parameters_recursive(nested, params[pram]) unless ! parameters[pram].present?
       end
     end
     parameters
