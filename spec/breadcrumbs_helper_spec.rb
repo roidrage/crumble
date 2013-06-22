@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-require 'active_support'
+require 'active_support/all'
+require 'action_view/helpers/capture_helper'
 require 'action_view/helpers/javascript_helper'
 require 'action_view/helpers/url_helper'
 
