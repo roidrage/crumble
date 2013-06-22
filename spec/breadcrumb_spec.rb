@@ -87,6 +87,10 @@ describe Breadcrumb do
       end
 
       Breadcrumb.instance.wrapper_html.should eql '<p id="breadcrumbs">%{crumbs}</p>'
+
+      Breadcrumb.configure do
+        add_wrapper_html nil
+      end
     end
 
     it "should store first and last css classes" do
@@ -97,6 +101,11 @@ describe Breadcrumb do
 
       Breadcrumb.instance.first_css_class_name.should eql 'home'
       Breadcrumb.instance.last_css_class_name.should eql 'last'
+
+      Breadcrumb.configure do
+        add_first_css_class_name nil
+        add_last_css_class_name nil
+      end
     end
   end
 end
