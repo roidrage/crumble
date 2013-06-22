@@ -80,5 +80,32 @@ describe Breadcrumb do
         end
       }.should raise_error(RuntimeError, "Trail for accounts/edit references non-existing crumb 'profile' (configuration file line: 78)\nTrail for accounts/show references non-existing crumb 'profile' (configuration file line: 79)")
     end
+
+    it "should wrap with html" do
+      Breadcrumb.configure do
+        add_wrapper_html '<p id="breadcrumbs">%{crumbs}</p>'
+      end
+
+      Breadcrumb.instance.wrapper_html.should eql '<p id="breadcrumbs">%{crumbs}</p>'
+
+      Breadcrumb.configure do
+        add_wrapper_html nil
+      end
+    end
+
+    it "should store first and last css classes" do
+      Breadcrumb.configure do
+        add_first_css_class_name 'home'
+        add_last_css_class_name 'last'
+      end
+
+      Breadcrumb.instance.first_css_class_name.should eql 'home'
+      Breadcrumb.instance.last_css_class_name.should eql 'last'
+
+      Breadcrumb.configure do
+        add_first_css_class_name nil
+        add_last_css_class_name nil
+      end
+    end
   end
 end

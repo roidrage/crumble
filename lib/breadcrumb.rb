@@ -26,6 +26,7 @@ class Breadcrumb
   Crumb = Struct.new(:name, :title, :url, :params)
   
   attr_accessor :trails, :crumbs, :delimiter
+  attr_reader :wrapper_html, :first_css_class_name, :last_css_class_name
   
   def initialize
     @last_crumb_linked = true
@@ -71,7 +72,19 @@ class Breadcrumb
   def last_crumb_linked?
     @last_crumb_linked
   end
-  
+
+  def add_first_css_class_name name
+    @first_css_class_name = name
+  end
+
+  def add_last_css_class_name name
+    @last_css_class_name = name
+  end
+
+  def add_wrapper_html html
+    @wrapper_html = html
+  end
+
   def validate
     invalid_trails = []
     trails.each do |trail|

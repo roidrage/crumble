@@ -5,6 +5,9 @@ module BreadcrumbsHelper
         trail.action.to_sym == params[:action].to_sym
         next unless trail.condition_met?(self)
         breadcrumb_trails = calculate_breadcrumb_trail(trail.trail)
+        if Breadcrumb.instance.wrapper_html
+          breadcrumb_trails = Breadcrumb.instance.wrapper_html.sub('%{crumbs}', breadcrumb_trails)
+        end
         breadcrumb_trails = breadcrumb_trails.html_safe if breadcrumb_trails.respond_to? :html_safe
         return breadcrumb_trails
       end
@@ -19,7 +22,14 @@ module BreadcrumbsHelper
       if not Breadcrumb.instance.last_crumb_linked? and crummy == trail.last
         breadcrumb_trail << eval(%Q{"#{assemble_crumb_title(crumb)}"})        
       else
-        breadcrumb_trail << link_to(eval(%Q{"#{assemble_crumb_title(crumb)}"}), fetch_crumb_url(crumb))
+        link_options = {}
+        if Breadcrumb.instance.last_css_class_name and (crummy == trail.last or
+            (not Breadcrumb.instance.last_crumb_linked? and crummy == trail[trail.size-2]))
+          link_options[:class] = Breadcrumb.instance.last_css_class_name
+        elsif Breadcrumb.instance.first_css_class_name and crummy == trail.first
+          link_options[:class] = Breadcrumb.instance.first_css_class_name
+        end
+        breadcrumb_trail << link_to(eval(%Q{"#{assemble_crumb_title(crumb)}"}), fetch_crumb_url(crumb), link_options)
       end
     end
     breadcrumb_trail.join(Breadcrumb.instance.delimiter)
